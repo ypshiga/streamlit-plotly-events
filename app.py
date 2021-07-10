@@ -84,4 +84,4 @@ if selected_points:
     inds = [x["pointNumber"] for x  in res]
     df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])   
     df.style.background_gradient(cmap='Spectral_r')    
-    st.table(df.assign(hack='').set_index('hack'))
+    st.dataframe(df.assign(hack='').set_index('hack'))
