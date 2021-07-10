@@ -4,3 +4,4 @@ requests
 plotly
 numpy
 streamlit_plotly_events
+tabulate
