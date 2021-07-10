@@ -74,7 +74,7 @@ fig.update_layout(mapbox_style="dark", mapbox_accesstoken=token,
         pitch=15,
         zoom=9
     ))
-selected_points = plotly_events(fig, click_event=True, select_event=True)
+selected_points = plotly_events(fig, click_event=True, select_event=True,override_width='90%')
 
 st.write('CPT code: ' + str(int(cpt_pick)))
 st.write('Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/dataset/chargemasters/resource/95e415ee-5c11-40b9-b693-ff9af7985a94)')
@@ -98,5 +98,5 @@ if selected_points:
         st.markdown(df.sort_values('Average Charge').to_markdown(index=False))
     if len(df.index)>1:
         hist = px.violin(df, y='Average Charge',  box=True, points="all", hover_data=['Hospital Name'])
-        st.plotly_chart(hist)
+        st.plotly_chart(hist,use_container_width=True)
 
