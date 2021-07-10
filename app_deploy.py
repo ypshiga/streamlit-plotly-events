@@ -38,9 +38,6 @@ cpt_pick = appended_df["2020 CPT Code"][appended_df['Item Name']==item_select].u
 #st.subheader('Displaying costs for: ' + str(item_select) + '.')
 #df_temp = appended_df[appended_df["2020 CPT Code"]==cpt_index].copy()
 
-st.write('CPT code: ' + str(int(cpt_pick)))
-st.write('Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/dataset/chargemasters/resource/95e415ee-5c11-40b9-b693-ff9af7985a94)')
-
 
 @st.cache
 def df_map(item):
@@ -78,6 +75,9 @@ fig.update_layout(mapbox_style="dark", mapbox_accesstoken=token,
         zoom=9
     ))
 selected_points = plotly_events(fig, click_event=True, select_event=True)
+
+st.write('CPT code: ' + str(int(cpt_pick)))
+st.write('Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/dataset/chargemasters/resource/95e415ee-5c11-40b9-b693-ff9af7985a94)')
 
 #st.plotly_chart(fig,use_container_width=True)
 
