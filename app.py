@@ -4,12 +4,9 @@ import json
 #Import plotly express and plotly graph_objects
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.graph_objs import *
 import pandas as pd 
 import numpy as np
 import os
-import numpy as np
-import pandas as pd
 import matplotlib 
 
 appended_df_base = pd.read_csv('Charge_data_2.csv')
@@ -82,6 +79,6 @@ st.write('Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/d
 if selected_points:
     res = json.loads(selected_points)
     inds = [x["pointNumber"] for x  in res]
-    df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])   
-    df.style.background_gradient(cmap='Spectral_r')    
-    st.dataframe(df.assign(hack='').set_index('hack'))
+    df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
+    #df_2=df.assign(hack='').set_index('hack')    
+    st.dataframe(df.style.background_gradient(cmap='YlOrRd', subset=['Average Charge']))
