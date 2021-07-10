@@ -9,6 +9,8 @@ import pandas as pd
 import numpy as np
 import os
 
+token = os.environ['TOKEN']
+
 appended_df_base = pd.read_csv('Charge_data_2.csv')
 appended_df_base.drop("Unnamed: 0", axis=1, inplace=True) # drop index
 df_agg = appended_df_base.groupby(['Item Name','2020 CPT Code'], as_index=False)['Average Charge'].agg(['mean',"std", 'count'])
@@ -16,28 +18,16 @@ agg_2 = df_agg.nlargest(20,'count')
 list_20 = [val[0] for val in agg_2.index.values]
 appended_df=appended_df_base[appended_df_base['Item Name'].isin(list_20)] # subset to top 20 most common
 
-
 st.set_page_config(page_title='Hospital Cost Finder', page_icon="https://img.icons8.com/color/48/000000/hospital.png")
 
-
-#st.title('')
 st.header('Find and compare hospital costs in California')
-
-
-# In[ ]:
 
 lat_init = 37.75
 lon_init = -122.3
-#token = 'pk.eyJ1IjoieXNoaWdhIiwiYSI6ImNrcWg4emxyaDAwZzkyb285dXpqb2ZoNWgifQ.AoifeJJZ-EN-zEbrEsJj9Q'
 
-token = os.environ['TOKEN']
 item_select = st.selectbox('Pick an item/procedure:',list(appended_df['Item Name'].unique()))
 
-#item_select = st.selectbox('Pick an item/procedure:',list(appended_df['Item Name'].unique()))
 cpt_pick = appended_df["2020 CPT Code"][appended_df['Item Name']==item_select].unique()
-#st.subheader('Displaying costs for: ' + str(item_select) + '.')
-#df_temp = appended_df[appended_df["2020 CPT Code"]==cpt_index].copy()
-
 
 @st.cache
 def df_map(item):
@@ -53,7 +43,6 @@ val_max = int(np.max(df_temp["Average Charge"]))
 
 st.subheader('State-wide stats: Average = $' + str(val_mean) + '. Min = $' + str(val_min) + '. Max = $' + str(val_max) + '.')
 
-#df_temp.loc[df_temp["Average Charge"]>val_99, "Average Charge"] = val_99
 fig = px.scatter_mapbox(df_temp, lat="lat", lon="lon", color="Average Charge",size="Average Charge",
     color_continuous_scale='ylorrd',hover_data ={'lat':False,'lon':False,'Average Charge': True},
     range_color=[val_1,val_99],hover_name = "Hospital Name",size_max = 30)
@@ -86,12 +75,6 @@ if selected_points:
     res = json.loads(selected_points)
     inds = [x["pointNumber"] for x  in res]
     df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
-    #st.dataframe(df.assign(hack='').set_index('hack'))
-    #st.dataframe(df.style.background_gradient(cmap='YlOrRd', subset=['Average Charge']))
-    # def color_survived(val):
-        # color = 'green' if val>val_mean else 'red'
-        # return f'background-color: {color}'
-    # st.dataframe(df.style.applymap(color_survived, subset=['Average Charge']))
     if len(df.index)>15:
         pass
     else:
