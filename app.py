@@ -74,7 +74,7 @@ fig.update_layout(mapbox_style="dark", mapbox_accesstoken=token,
         pitch=15,
         zoom=9
     ))
-selected_points = plotly_events(fig, click_event=True, select_event=True)
+selected_points = plotly_events(fig, click_event=True, select_event=True,override_width='90%')
 
 st.write(
     'CPT code: ' + str(int(cpt_pick)) + '.' 
