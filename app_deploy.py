@@ -28,9 +28,9 @@ st.header('Find and compare hospital costs in California')
 
 lat_init = 37.75
 lon_init = -122.3
-token = 'pk.eyJ1IjoieXNoaWdhIiwiYSI6ImNrcWg4emxyaDAwZzkyb285dXpqb2ZoNWgifQ.AoifeJJZ-EN-zEbrEsJj9Q'
+#token = 'pk.eyJ1IjoieXNoaWdhIiwiYSI6ImNrcWg4emxyaDAwZzkyb285dXpqb2ZoNWgifQ.AoifeJJZ-EN-zEbrEsJj9Q'
 
-#token = os.environ['TOKEN']
+token = os.environ['TOKEN']
 item_select = st.selectbox('Pick an item/procedure:',list(appended_df['Item Name'].unique()))
 
 #item_select = st.selectbox('Pick an item/procedure:',list(appended_df['Item Name'].unique()))
@@ -42,7 +42,7 @@ st.write('CPT code: ' + str(int(cpt_pick)))
 st.write('Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/dataset/chargemasters/resource/95e415ee-5c11-40b9-b693-ff9af7985a94)')
 
 
-#@st.cache
+@st.cache
 def df_map(item):
     df_temp = appended_df[appended_df["Item Name"]==item].copy()
     return df_temp
