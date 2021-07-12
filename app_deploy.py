@@ -11,14 +11,19 @@ import os
 
 token = os.environ['TOKEN']
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def df_map(item):
     df_temp = appended_df[appended_df["Item Name"]==item].copy()
     selected_points=[]
     return df_temp
+
+def df_select(df_temp,selected_points):
+    inds = [x["pointNumber"] for x  in selected_points]
+    df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
+    return df
     
 
-# some data filtering
+# Load data and do some filtering
 appended_df_base = pd.read_csv('Charge_data_2.csv')
 appended_df_base.drop("Unnamed: 0", axis=1, inplace=True) # drop index
 df_agg = appended_df_base.groupby(['Item Name','2020 CPT Code'], as_index=False)['Average Charge'].agg(['mean',"std", 'count'])
@@ -27,7 +32,7 @@ list_20 = [val[0] for val in agg_2.index.values]
 appended_df=appended_df_base[appended_df_base['Item Name'].isin(list_20)] # subset to top 20 most common
 
 # First streamlit command
-st.set_page_config(page_title='Hospital Cost Finder', page_icon="https://img.icons8.com/color/48/000000/hospital.png")
+st.set_page_config(page_title='Hospital Cost Finder', page_icon="img/clinic-16.png")
 
 #st.title('')
 st.header('Find and compare hospital costs in California')
@@ -110,11 +115,6 @@ fig.update_layout(margin=dict(l=10, r=110, t=25, b=10))
 var1.plotly_chart(fig,use_container_width=True)
 #selected_points_chart = plotly_events(hist, click_event=True,select_event=True,override_width='95%')
 
-def df_select(df_temp,selected_points):
-    inds = [x["pointNumber"] for x  in selected_points]
-    df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
-    return df
-    
 # def df_update(df_orig,df_temp,selected_points):
     # inds = [x["pointNumber"] for x  in selected_points]
     # df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
