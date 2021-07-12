@@ -37,15 +37,18 @@ st.set_page_config(page_title='Hospital Cost Finder', page_icon="img/clinic-16.p
 #st.title('')
 st.header('Find and compare hospital costs in California')
 
-# initial selection for inital plots
-item_select = 'Emergency Room Visit, Level 2 (low to moderate severity)'
 
+# initial selection for inital plots
+item_select = st.selectbox('20 most common services:',list(appended_df['Item Name'].unique()),index=0)
+   
 lat_init = 36.75
 lon_init = -120
 
 my_expander = st.beta_expander(label='Select services')
 with my_expander:
     common = st.button('20 Most Common')
+    if common:
+        'See list above ☝️'
     LAB = st.button('Labs')
     if LAB:
         'Working on this...'
@@ -58,9 +61,6 @@ with my_expander:
     MED = st.button('Medicine')
     if MED:
         'Working on this...'
-    if common:
-        item_select = st.selectbox('20 most common services:',list(appended_df['Item Name'].unique()))
-
 cpt_pick = appended_df["2020 CPT Code"][appended_df['Item Name']==item_select].unique()
 #st.subheader('Displaying costs for: ' + str(item_select) + '.')
 #df_temp = appended_df[appended_df["2020 CPT Code"]==cpt_index].copy()
