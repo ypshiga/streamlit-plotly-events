@@ -153,23 +153,20 @@ if selected_points:
 
     my_expander_table  = st.beta_expander(label='See Table: ')
     with my_expander_table:
-        if len(df.index)>25:
-            pass
+        #st.markdown(df[['Hospital Name','Average Charge']].sort_values('Average Charge').rename(columns={'Average Charge':'Cost'}).to_markdown(index=False))
+        df_mark = df[['Hospital Name','Average Charge']].sort_values('Average Charge')
+        df_mark['Cost']=df_mark['Average Charge'].apply(lambda x: f"${x:,.0f}")
+        #
+        table_md = df_mark[['Hospital Name','Cost']].to_markdown(index=False)
+        if len(table_md)<500:
+            col1,col2, col3 = st.beta_columns((1,3,2))
+            col2.markdown(table_md)
+            col_space,col_space2 = st.beta_columns((1,1))
+            col_space.write("")
         else:
-            #st.markdown(df[['Hospital Name','Average Charge']].sort_values('Average Charge').rename(columns={'Average Charge':'Cost'}).to_markdown(index=False))
-            df_mark = df[['Hospital Name','Average Charge']].sort_values('Average Charge')
-            df_mark['Cost']=df_mark['Average Charge'].apply(lambda x: f"${x:,.0f}")
-            #
-            table_md = df_mark[['Hospital Name','Cost']].to_markdown(index=False)
-            if len(table_md)<500:
-                col1,col2, col3 = st.beta_columns((1,3,2))
-                col2.markdown(table_md)
-                col_space,col_space2 = st.beta_columns((1,1))
-                col_space.write("")
-            else:
-                st.markdown(table_md)
-                col_space,col_space2 = st.beta_columns((1,1))
-                col_space.write("")
+            st.markdown(table_md)
+            col_space,col_space2 = st.beta_columns((1,1))
+            col_space.write("")
 
     
 col_space,col_space2 = st.beta_columns((1,1))
