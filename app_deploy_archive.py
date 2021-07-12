@@ -16,52 +16,51 @@ def df_map(item):
     df_temp = appended_df[appended_df["Item Name"]==item].copy()
     selected_points=[]
     return df_temp
-    
 
 def df_select(df_temp,selected_points):
     inds = [x["pointNumber"] for x  in selected_points]
     df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
     return df
     
-# some data filtering
+
+# Load data and do some filtering
 appended_df_base = pd.read_csv('Charge_data_2.csv')
 appended_df_base.drop("Unnamed: 0", axis=1, inplace=True) # drop index
 df_agg = appended_df_base.groupby(['Item Name','2020 CPT Code'], as_index=False)['Average Charge'].agg(['mean',"std", 'count'])
-agg_2 = df_agg.nlargest(25,'count')
+agg_2 = df_agg.nlargest(20,'count')
 list_20 = [val[0] for val in agg_2.index.values]
 appended_df=appended_df_base[appended_df_base['Item Name'].isin(list_20)] # subset to top 20 most common
 
 # First streamlit command
 st.set_page_config(page_title='Hospital Cost Finder', page_icon="img/clinic-16.png")
-# from https://www.iconsdb.com/custom-color/clinic-icon.html
+
 #st.title('')
 st.header('Find and compare hospital costs in California')
 
-list_of_i = list(appended_df['Item Name'].unique())
+
 # initial selection for inital plots
-item_select = st.selectbox('25 most common services:',list_of_i,index=0)
+item_select = st.selectbox('20 most common services:',list(appended_df['Item Name'].unique()),index=0)
    
 lat_init = 36.75
 lon_init = -120
 
-# my_expander = st.beta_expander(label='Select services')
-# with my_expander:
-    # common = st.button('20 Most Common')
-    # if common:
-        # 'See list above ☝️'
-    # LAB = st.button('Labs')
-    # if LAB:
-        # 'Working on this...'
-    # ER = st.button('Emergency')
-    # if ER:
-        # 'Working on this...'
-    # RAD = st.button('Radiology')
-    # if RAD:
-        # 'Working on this...'
-    # MED = st.button('Medicine')
-    # if MED:
-        # 'Working on this...'
-
+my_expander = st.beta_expander(label='Select services')
+with my_expander:
+    common = st.button('20 Most Common')
+    if common:
+        'See list above ☝️'
+    LAB = st.button('Labs')
+    if LAB:
+        'Working on this...'
+    ER = st.button('Emergency')
+    if ER:
+        'Working on this...'
+    RAD = st.button('Radiology')
+    if RAD:
+        'Working on this...'
+    MED = st.button('Medicine')
+    if MED:
+        'Working on this...'
 cpt_pick = appended_df["2020 CPT Code"][appended_df['Item Name']==item_select].unique()
 #st.subheader('Displaying costs for: ' + str(item_select) + '.')
 #df_temp = appended_df[appended_df["2020 CPT Code"]==cpt_index].copy()
@@ -75,19 +74,18 @@ val_min = int(np.min(df_temp["Average Charge"]))
 val_max = int(np.max(df_temp["Average Charge"]))
 
 st.subheader(item_select)
+
 st.subheader('Average cost = $' + str(val_mean))
 #st.subheader('State-wide average = $' + str(val_mean) + '. Min = $' + str(val_min) + '. Max = $' + str(val_max) + '.')
 
 #df_temp.loc[df_temp["Average Charge"]>val_99, "Average Charge"] = val_99
-
-#st.write('Make a selection to see more')
-
 fig = px.scatter_mapbox(df_temp, lat="lat", lon="lon", color="Average Charge",size="Average Charge",
     color_continuous_scale='ylorrd',hover_data ={'lat':False,'lon':False,'Average Charge': True},
     range_color=[val_1,val_99],custom_data=['Hospital Name','Average Charge'],size_max = 30)
 template='<b>%{customdata[0]}</b><br>$%{customdata[1]:,.0f}'
 fig.update_traces(hovertemplate=template)
 fig.update_layout(mapbox_style="dark", mapbox_accesstoken=token,
+    title_x=0.5,
     margin=dict(l=0, r=0, t=25, b=10),
     coloraxis_colorbar=dict(
     xpad=3,title='',
@@ -117,7 +115,6 @@ fig.update_layout(margin=dict(l=10, r=110, t=25, b=10))
 var1.plotly_chart(fig,use_container_width=True)
 #selected_points_chart = plotly_events(hist, click_event=True,select_event=True,override_width='95%')
 
-    
 # def df_update(df_orig,df_temp,selected_points):
     # inds = [x["pointNumber"] for x  in selected_points]
     # df = pd.DataFrame(df_temp[['Hospital Name','Average Charge']].iloc[inds])
