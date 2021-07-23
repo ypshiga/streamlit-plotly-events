@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_plotly_events import plotly_events
-#import streamlit.components.v1 as components
 import json
 #Import plotly express and plotly graph_objects
 import plotly.express as px
@@ -55,7 +54,7 @@ if selected_points:
     var1.empty()
     st.write(selected_points)
 
-    selected=json.loads(str(selected_points))
+    selected=json.loads(selected_points)
     df = select_df_points(df_temp,selected)
     
     if len(df.index)>=1:
