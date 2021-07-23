@@ -51,6 +51,7 @@ with my_expander_dist:
 
 if selected_points:
     var1.empty()
+    st.write(selected_points)
     selected=json.loads(selected_points)
     df = select_df_points(df_temp,selected)
     
