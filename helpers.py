@@ -10,7 +10,6 @@ from geopy.distance import great_circle
 def select_df_items(appended_df,item):
     #use the item (from item selection) to subset dataframe
     df_temp = appended_df[appended_df["Item Name"]==item].copy()
-    selected_points=[]
     return df_temp
     
 
