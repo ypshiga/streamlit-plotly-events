@@ -6,4 +6,3 @@ numpy
 streamlit_plotly_events
 tabulate
 geopy
-json
