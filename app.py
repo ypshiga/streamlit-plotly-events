@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_plotly_events import plotly_events
-import json
 #Import plotly express and plotly graph_objects
 import plotly.express as px
 import plotly.graph_objects as go
@@ -29,7 +28,7 @@ if address:
     coordinates = convert_address(address)
     zoom_val = 10
     
-item_select = st.selectbox('Select a service:',appended_df['Item Name'].unique())
+item_select = st.selectbox('Select a service:',sorted(appended_df['Item Name'].unique()))
 
 cpt_pick = appended_df["2020 CPT Code"][appended_df['Item Name']==item_select].unique()
 
@@ -52,9 +51,7 @@ with my_expander_dist:
 
 if selected_points:
     var1.empty()
-    st.write(type(selected_points))
 
-   # selected=json.loads(selected_points)
     df = select_df_points(df_temp,selected_points)
     
     if len(df.index)>=1:
