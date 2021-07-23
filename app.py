@@ -53,7 +53,8 @@ with my_expander_dist:
 
 if selected_points:
     var1.empty()
-    df = select_df_points(df_temp,selected_points)
+    selected=json.loads(selected_points)
+    df = select_df_points(df_temp,selected)
     
     if len(df.index)>=1:
         fig4 = make_combined_violin(df_temp,df)

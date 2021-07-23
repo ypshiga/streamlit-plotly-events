@@ -13,8 +13,7 @@ def select_df_items(appended_df,item):
     return df_temp
     
 
-def select_df_points(df_temp,selected_points):
-    selected=json.loads(selected_points)
+def select_df_points(df_temp,selected):
     #use the points (from map selection) to subset dataframe
     inds = [ x["pointNumber"] for x  in selected if x["curveNumber"]<1]
     df = pd.DataFrame(df_temp[['Hospital Name','Average Charge','lat','lon']].iloc[inds])
