@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_plotly_events import plotly_events
-import json
 
 #Import plotly express and plotly graph_objects
 import plotly.express as px
@@ -28,7 +27,7 @@ if address:
     coordinates = convert_address(address)
     zoom_val = 10
     
-item_select = st.selectbox('Select a service:',appended_df['Item Name'].unique())
+item_select = st.selectbox('Select a service:',sorted(appended_df['Item Name'].unique()))
 
 cpt_pick = appended_df["2020 CPT Code"][appended_df['Item Name']==item_select].unique()
 
