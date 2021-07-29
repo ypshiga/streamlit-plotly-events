@@ -101,17 +101,18 @@ def make_table(df,coordinates,sort_val):
     
     def f(x):    
         
-        return '[{}] (http://maps.google.com/maps?saddr={:f},{:f}&daddr={:f},{:f} "Google Maps Directions")'.format(x['Distance_val'],x['lat'], x['lon'] ,coordinates[0],coordinates[1])
+        return '[{}] (http://maps.google.com/maps?saddr={:f},{:f}&daddr={:f},{:f} "Google Maps Directions")'.format(x['Distance'],x['lat'], x['lon'] ,coordinates[0],coordinates[1])
        
     df_mark = df[['Hospital Name','Average Charge','lat','lon']].sort_values('Average Charge')
     coord_vals=df_mark[['lat','lon']].values
     dist = [calc_dist(x,coordinates) for x in coord_vals]
     df_mark['Distance_val'] = dist
-    df_mark['Distance_val'] = df_mark['Distance_val'].apply(lambda x: f"{x:.1f} mile" if x==1 else f"{x:,.1f} miles")
+    df_mark['Distance'] = df_mark['Distance_val'].apply(lambda x: f"{x:.1f} mile" if x==1 else f"{x:,.1f} miles")
     df_mark['Cost']=df_mark['Average Charge'].apply(lambda x: f"${x:,.0f}")
     df_mark['Distance'] = df_mark.apply(f, axis=1)
     if sort_val=='Distance':
-        table_md = df_mark[['Hospital Name','Cost','Distance']].sort_values('Distance').to_markdown(index=False)
+        temp = df_mark[['Hospital Name','Cost','Distance','Distance_val']].sort_values('Distance_val')
+        table_md = temp[['Hospital Name','Cost','Distance']].to_markdown(index=False)
     else:
         table_md = df_mark[['Hospital Name','Cost','Distance']].to_markdown(index=False)
     return table_md
