@@ -45,17 +45,20 @@ if item_select:
 my_expander_dist  = st.beta_expander(label='See Data Distribution: ')
 
 with my_expander_dist:
+    point_vis = 'suspectedoutliers'  
     var1 = st.empty()
-    fig_dist = make_state_violin(df_temp)
+    fig_dist = make_state_violin(df_temp,point_vis)
     var1.plotly_chart(fig_dist,use_container_width=True)
 
 if selected_points:
+   
     var1.empty()
 
     df = select_df_points(df_temp,selected_points)
     
     if len(df.index)>=1:
-        fig4 = make_combined_violin(df_temp,df)
+       
+        fig4 = make_combined_violin(df_temp,df,point_vis)
         
         with my_expander_dist:
             st.plotly_chart(fig4,use_container_width=True)
@@ -63,7 +66,14 @@ if selected_points:
         my_expander_table  = st.beta_expander(label='See Table: ')
     
         with my_expander_table:
-            table_md = make_table(df,coordinates)
+            col_temp1,col_temp2,col_temp3,col_temp4 = st.beta_columns((1,1,1,1))
+    
+            vis_button = col_temp1.selectbox('Sort by:',['Cost','Distance'],key='2')
+            if vis_button=='Cost':
+                sort_val = 'Average Charge'
+            if vis_button=='Distance':
+                sort_val = 'Distance'
+            table_md = make_table(df,coordinates,sort_val)
         
             if len(table_md)<500:
                 col1,col2, col3 = st.beta_columns((1,3,2))
@@ -73,11 +83,14 @@ if selected_points:
             
             else:
                 st.markdown(table_md)
-                #col_space,col_space2 = st.beta_columns((1,1))
-                #col_space.write("")
+              
                 
 col_space,col_space2 = st.beta_columns((1,1))
 col_space.write("")
-col1_a,col2_a, col3_a = st.beta_columns((1,1,3))
-col1_a.write('CPT code: ' + str(int(cpt_pick)))
+col1_a, col3_a = st.beta_columns((2,3))
+if len(cpt_pick)>1:
+    cpt_text = [str(int(val)) for val in cpt_pick]
+    col1_a.write('CPT code: ' + ", ".join(cpt_text))
+else:
+    col1_a.write('CPT code: ' + str(int(cpt_pick)))
 col3_a.write( " Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/dataset/chargemasters/resource/95e415ee-5c11-40b9-b693-ff9af7985a94)")

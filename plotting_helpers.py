@@ -24,7 +24,7 @@ def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
     
     fig.update_layout(mapbox_style="dark", 
         mapbox_accesstoken=token,
-        margin=dict(l=0, r=0, t=25, b=10),
+        margin=dict(l=0, r=0, t=35, b=10),
         coloraxis_colorbar=dict(
             xpad=3,title='',
             tickprefix='$'
@@ -46,19 +46,26 @@ def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
         mode='markers',
         marker=dict(symbol ='marker', size=15, color='blue',opacity=.5))
         )
-       
+    fig.add_annotation(xref="paper", yref="paper",
+            x=0.84, y=1, 
+            text="Try making a selection ☝️",
+            showarrow=False,
+            arrowhead=1,font=dict(
+                color="LightYellow", size=14)
+                )  
+            
     fig.update_traces(showlegend=False)
 
     return fig
   
-def make_state_violin(df_temp):
+def make_state_violin(df_temp,point_vis):
 
     df_temp['State']='CA'
     fig_dist = go.Figure()
     fig_dist.add_trace(go.Violin(x=df_temp['State'], y=df_temp['Average Charge'], 
         meanline_visible=True, 
         box_visible=True,
-        points ='all', 
+        points = point_vis, 
         customdata = df_temp['Hospital Name'],
         hovertemplate='<b>%{customdata}</b><br>$%{y:,.0f}',
         hoveron = "violins+points",name='')
@@ -68,16 +75,16 @@ def make_state_violin(df_temp):
     return fig_dist
      
 
-def make_combined_violin(df_temp,df):
+def make_combined_violin(df_temp,df,point_vis):
     df['State']='Selection'
     fig2 = go.Figure()
     fig2.add_trace(go.Violin(x=df_temp['State'], y=df_temp['Average Charge'],
-        points ='all', 
+        points = point_vis, 
         meanline_visible=True, 
         box_visible=True,
         customdata = df_temp['Hospital Name'],
         hovertemplate='<b>%{customdata}</b><br>$%{y:,.0f}',
-        hoveron = "violins+points")
+        hoveron = "violins+points",name='')
         )
     fig3 = px.strip(df,x=df['State'], y=df['Average Charge'],
         hover_data = {'State': False,'Average Charge': True,'Hospital Name':False},
@@ -90,19 +97,22 @@ def make_combined_violin(df_temp,df):
     fig4.update_layout(margin=dict(l=10, r=110, t=25, b=10),showlegend=False)
     return fig4
     
-def make_table(df,coordinates):
+def make_table(df,coordinates,sort_val):
     
     def f(x):    
         
-        return '[{}] (http://maps.google.com/maps?saddr={:f},{:f}&daddr={:f},{:f} "Google Maps Directions")'.format(x['Distance'],x['lat'], x['lon'] ,coordinates[0],coordinates[1])
-        
+        return '[{}] (http://maps.google.com/maps?saddr={:f},{:f}&daddr={:f},{:f} "Google Maps Directions")'.format(x['Distance_val'],x['lat'], x['lon'] ,coordinates[0],coordinates[1])
+       
     df_mark = df[['Hospital Name','Average Charge','lat','lon']].sort_values('Average Charge')
     coord_vals=df_mark[['lat','lon']].values
     dist = [calc_dist(x,coordinates) for x in coord_vals]
-    df_mark['Distance'] = dist
-    df_mark['Distance'] = df_mark['Distance'].apply(lambda x: f"{x:.1f} mile" if x==1 else f"{x:,.1f} miles")
+    df_mark['Distance_val'] = dist
+    df_mark['Distance_val'] = df_mark['Distance_val'].apply(lambda x: f"{x:.1f} mile" if x==1 else f"{x:,.1f} miles")
     df_mark['Cost']=df_mark['Average Charge'].apply(lambda x: f"${x:,.0f}")
-    df_mark['Directions'] = df_mark.apply(f, axis=1)
-    table_md = df_mark[['Hospital Name','Cost','Directions']].to_markdown(index=False)
+    df_mark['Distance'] = df_mark.apply(f, axis=1)
+    if sort_val=='Distance':
+        table_md = df_mark[['Hospital Name','Cost','Distance']].sort_values('Distance').to_markdown(index=False)
+    else:
+        table_md = df_mark[['Hospital Name','Cost','Distance']].to_markdown(index=False)
     return table_md
     
