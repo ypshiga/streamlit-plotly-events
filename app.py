@@ -16,8 +16,8 @@ token = 'pk.eyJ1IjoieXNoaWdhIiwiYSI6ImNrcWg4emxyaDAwZzkyb285dXpqb2ZoNWgifQ.Aoife
 
 appended_df = load_clean_data('Charge_data_2.csv')
 
-st.set_page_config(page_title='Hospital Cost Finder', page_icon="img/clinic-16.png") # logo from https://www.iconsdb.com/custom-color/clinic-icon.html
-
+#st.set_page_config(page_title='Hospital Cost Finder', page_icon="img/clinic-16.png") # logo from https://www.iconsdb.com/custom-color/clinic-icon.html
+st.set_page_config(page_title='Hospital Cost Finder', page_icon="https://api.iconify.design/ic:baseline-local-hospital.svg?color=orange") # logo from https://www.iconsdb.com/custom-color/clinic-icon.html
 st.title('Sir Charge A Lot')
 
 st.header('Find and compare hospital costs in California')
