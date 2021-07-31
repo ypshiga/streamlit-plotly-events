@@ -1,25 +1,26 @@
 import json
 import pandas as pd 
 import numpy as np
+import streamlit as st
 
 #Geopy's Nominatim
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
 
-
+@st.cache(allow_output_mutation=True)
 def select_df_items(appended_df,item):
     #use the item (from item selection) to subset dataframe
     df_temp = appended_df[appended_df["Item Name"]==item].copy()
     return df_temp
     
-
+@st.cache(allow_output_mutation=True)
 def select_df_points(df_temp,selected):
     #use the points (from map selection) to subset dataframe
     inds = [ x["pointNumber"] for x  in selected if x["curveNumber"]<1]
     df = pd.DataFrame(df_temp[['Hospital Name','Average Charge','lat','lon']].iloc[inds])
     return df
     
-
+@st.cache(allow_output_mutation=True)
 def load_clean_data(file_name):
     # read in csv into pandas and do some data cleaning and filtering
     appended_df_base = pd.read_csv(file_name)
@@ -29,7 +30,8 @@ def load_clean_data(file_name):
     list_top = [val[0] for val in agg_2.index.values]
     appended_df=appended_df_base[appended_df_base['Item Name'].isin(list_top)] # subset to top 25 most common
     return appended_df
-    
+
+@st.cache
 def convert_address(address):
 	#Here we use Nominatin to convert address to a latitude/longitude coordinates"
 	geolocator = Nominatim(user_agent="my_app") #using open street map API 
@@ -40,6 +42,7 @@ def convert_address(address):
 	point = [lat, lon]
 	return point
     
+@st.cache
 def quick_stats(df_temp):
     #calc some stats for plotting and display
     val_99 = np.nanpercentile(df_temp["Average Charge"],99)
@@ -48,7 +51,8 @@ def quick_stats(df_temp):
     val_min = int(df_temp["Average Charge"].min())
     val_max = int(df_temp["Average Charge"].max())   
     return val_1,val_99,val_mean,val_min,val_max
-    
+
+@st.cache  
 def calc_dist(coord_1, coord_2):
     # distance calculated in mi
     return(great_circle(coord_1, coord_2).mi)

@@ -6,6 +6,9 @@ import plotly.graph_objects as go
 import pandas as pd 
 import numpy as np
 import os
+
+st.set_page_config(page_title='Hospital Cost Finder', page_icon="https://api.iconify.design/ic:baseline-local-hospital.svg?color=orange") # background: url('https://api.iconify.design/openmoji:hospital.svg') no-repeat center center / contain;
+
 from helpers import select_df_items,select_df_points,convert_address,load_clean_data,quick_stats
 from plotting_helpers import create_map,make_state_violin,make_combined_violin,make_table
 
@@ -17,7 +20,6 @@ token = 'pk.eyJ1IjoieXNoaWdhIiwiYSI6ImNrcWg4emxyaDAwZzkyb285dXpqb2ZoNWgifQ.Aoife
 appended_df = load_clean_data('Charge_data_2.csv')
 
 #st.set_page_config(page_title='Hospital Cost Finder', page_icon="img/clinic-16.png") # logo from https://www.iconsdb.com/custom-color/clinic-icon.html
-st.set_page_config(page_title='Hospital Cost Finder', page_icon="https://api.iconify.design/ic:baseline-local-hospital.svg?color=orange") # background: url('https://api.iconify.design/openmoji:hospital.svg') no-repeat center center / contain;
 st.title('Sir Charge A Lot')
 
 st.header('Find and compare hospital costs in California')
@@ -94,3 +96,4 @@ if len(cpt_pick)>1:
 else:
     col1_a.write('CPT code: ' + str(int(cpt_pick)))
 col3_a.write( " Based on 2020 data from: [data.chhs.ca.gov](https://data.chhs.ca.gov/dataset/chargemasters/resource/95e415ee-5c11-40b9-b693-ff9af7985a94)")
+st.write("*All prices listed here reflect the average billing rate charged by a provider before any insurance adjustments. To estimate your out-of-pocket expenses, refer to the policy & coverage details of any health insurance plans that you may have.")
