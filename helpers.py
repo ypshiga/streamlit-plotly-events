@@ -7,20 +7,20 @@ import streamlit as st
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def select_df_items(appended_df,item):
     #use the item (from item selection) to subset dataframe
     df_temp = appended_df[appended_df["Item Name"]==item].copy()
     return df_temp
     
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def select_df_points(df_temp,selected):
     #use the points (from map selection) to subset dataframe
     inds = [ x["pointNumber"] for x  in selected if x["curveNumber"]<1]
     df = pd.DataFrame(df_temp[['Hospital Name','Average Charge','lat','lon']].iloc[inds])
     return df
     
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def load_clean_data(file_name):
     # read in csv into pandas and do some data cleaning and filtering
     appended_df_base = pd.read_csv(file_name)

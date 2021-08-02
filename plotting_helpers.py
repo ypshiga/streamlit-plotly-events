@@ -5,7 +5,7 @@ import numpy as np
 from helpers import calc_dist
 import streamlit as st
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,)
 def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
     df_temp['Difference']=df_temp['Average Charge']-df_temp['Average Charge'].mean()
     df_temp['const_size']=df_temp['Average Charge'].mean()
@@ -72,7 +72,7 @@ def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
 
     return fig
     
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def create_map_base(df_temp,coordinates,zoom_val,token):
     df_temp['const_size']=df_temp['Average Charge'].mean()
     total_hospitals = df_temp['Hospital Name'].nunique()
@@ -108,7 +108,7 @@ def create_map_base(df_temp,coordinates,zoom_val,token):
 
     return fig
     
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def map_location(fig,coordinates):
     fig.add_trace(go.Scattermapbox(lat=np.array(coordinates[0]), lon=np.array(coordinates[1]),
         hovertext=['Your Location'], 
@@ -121,7 +121,7 @@ def map_location(fig,coordinates):
     return fig
 
 
-@st.cache(allow_output_mutation=True)  
+@st.cache(allow_output_mutation=True,show_spinner=False)  
 def make_state_violin(df_temp,point_vis):
 
     df_temp['State']='CA'
@@ -138,7 +138,7 @@ def make_state_violin(df_temp,point_vis):
     fig_dist.update_layout(margin=dict(l=10, r=110, t=25, b=10))
     return fig_dist
      
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def make_combined_violin(df_temp,df,point_vis):
     df['State']='Selection'
     fig2 = go.Figure()
@@ -161,7 +161,7 @@ def make_combined_violin(df_temp,df,point_vis):
     fig4.update_layout(margin=dict(l=10, r=110, t=25, b=10),showlegend=False)
     return fig4
     
-@st.cache(allow_output_mutation=True) 
+@st.cache(allow_output_mutation=True,show_spinner=False) 
 def make_table(df,coordinates,sort_val):
     
     def f(x):    
