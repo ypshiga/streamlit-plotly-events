@@ -7,17 +7,23 @@ import streamlit as st
 
 @st.cache(allow_output_mutation=True)
 def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
-    
+    df_temp['Difference']=df_temp['Average Charge']-df_temp['Average Charge'].mean()
+    df_temp['const_size']=df_temp['Average Charge'].mean()
+    total_hospitals = df_temp['Hospital Name'].nunique()
     fig = px.scatter_mapbox(df_temp, 
         lat="lat", 
         lon="lon", 
+        #color="temp_size",
         color="Average Charge",
-        size="Average Charge",
+        size="const_size",
+        #size="temp_size",
         color_continuous_scale='ylorrd',
+        #color_continuous_scale='RdYlBu_r',
+        #color_continuous_midpoint=df_temp['Average Charge'].mean(),
         hover_data ={'lat':False,'lon':False,'Average Charge': True},
         range_color=[val_1,val_99],
         custom_data=['Hospital Name','Average Charge'],
-        size_max = 30
+        size_max = 13
         )
     
     template='<b>%{customdata[0]}</b><br>$%{customdata[1]:,.0f}'
@@ -55,11 +61,66 @@ def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
             arrowhead=1,font=dict(
                 color="LightYellow", size=14)
                 )  
+    # fig.add_annotation(xref="paper", yref="paper",
+            # x=0, y=1, 
+            # text="Displaying " + str(total_hospitals) + " hospitals",
+            # showarrow=False,
+            # arrowhead=1,font=dict(
+                # color="LightYellow", size=14)
+                # )          
+    fig.update_traces(showlegend=False)
+
+    return fig
+    
+@st.cache(allow_output_mutation=True)
+def create_map_base(df_temp,coordinates,zoom_val,token):
+    df_temp['const_size']=df_temp['Average Charge'].mean()
+    total_hospitals = df_temp['Hospital Name'].nunique()
+    df_temp = df_temp[df_temp['Item Name']=='']
+    fig = px.scatter_mapbox(df_temp, 
+        lat="lat", 
+        lon="lon", 
+        size="const_size",
+        hover_data ={'lat':False,'lon':False,'Average Charge': False},
+        size_max = 0.001
+        )
+    
+    fig.update_layout(mapbox_style="dark", 
+        mapbox_accesstoken=token,
+        margin=dict(l=0, r=0, t=35, b=10),
+        coloraxis_colorbar=dict(
+            xpad=3,title='',
+            tickprefix='$'
+            ),
+        hovermode='closest',
+        mapbox=dict(
+            bearing=0,
+            center=go.layout.mapbox.Center(
+                lat=coordinates[0],
+                lon=coordinates[1]
+                ),
+            pitch=15,
+            zoom=zoom_val
+            )
+        )
             
     fig.update_traces(showlegend=False)
 
     return fig
     
+@st.cache(allow_output_mutation=True)
+def map_location(fig,coordinates):
+    fig.add_trace(go.Scattermapbox(lat=np.array(coordinates[0]), lon=np.array(coordinates[1]),
+        hovertext=['Your Location'], 
+        hoverinfo='text',
+        mode='markers',
+        marker=dict(symbol ='marker', size=15, color='blue',opacity=.5))
+        )
+    fig.update_traces(showlegend=False)
+
+    return fig
+
+
 @st.cache(allow_output_mutation=True)  
 def make_state_violin(df_temp,point_vis):
 

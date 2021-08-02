@@ -31,7 +31,7 @@ def load_clean_data(file_name):
     appended_df=appended_df_base[appended_df_base['Item Name'].isin(list_top)] # subset to top 25 most common
     return appended_df
 
-@st.cache
+@st.cache(show_spinner=False)
 def convert_address(address):
 	#Here we use Nominatin to convert address to a latitude/longitude coordinates"
 	geolocator = Nominatim(user_agent="my_app") #using open street map API 
@@ -42,7 +42,7 @@ def convert_address(address):
 	point = [lat, lon]
 	return point
     
-@st.cache
+@st.cache(show_spinner=False)
 def quick_stats(df_temp):
     #calc some stats for plotting and display
     val_99 = np.nanpercentile(df_temp["Average Charge"],99)
@@ -52,7 +52,7 @@ def quick_stats(df_temp):
     val_max = int(df_temp["Average Charge"].max())   
     return val_1,val_99,val_mean,val_min,val_max
 
-@st.cache  
+@st.cache(show_spinner=False)
 def calc_dist(coord_1, coord_2):
     # distance calculated in mi
     return(great_circle(coord_1, coord_2).mi)
