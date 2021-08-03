@@ -43,7 +43,7 @@ map1 = st.empty()
 if len(df_temp)==1:
     fig = create_map_base(appended_df,coordinates,zoom_val,token)
     fig = map_location(fig,coordinates)
-    map1.plotly_chart(fig)
+    map1.plotly_chart(fig, use_container_width=True)
     
 if item_select:
     map1.empty()
