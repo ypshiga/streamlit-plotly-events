@@ -28,7 +28,9 @@ def load_clean_data(file_name):
     df_agg = appended_df_base.groupby(['Item Name','2020 CPT Code'], as_index=False)['Average Charge'].agg(['mean',"std", 'count'])
     agg_2 = df_agg.nlargest(25,'count')
     list_top = [val[0] for val in agg_2.index.values]
-    appended_df=appended_df_base[appended_df_base['Item Name'].isin(list_top)] # subset to top 25 most common
+    appended_df = appended_df_base[appended_df_base['Item Name'].isin(list_top)] # subset to top 25 most common
+    #appended_df[appended_df['Hospital Name'].str.contains("State -")]
+    appended_df = appended_df[~appended_df['Hospital Name'].str.contains("State -")]
     return appended_df
 
 @st.cache(show_spinner=False)
