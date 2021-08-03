@@ -5,7 +5,7 @@ import numpy as np
 from helpers import calc_dist
 import streamlit as st
 
-@st.cache(allow_output_mutation=True,)
+@st.cache(allow_output_mutation=True,show_spinner=False)
 def create_map(df_temp,coordinates,zoom_val,val_1,val_99,token):
     df_temp['Difference']=df_temp['Average Charge']-df_temp['Average Charge'].mean()
     df_temp['const_size']=df_temp['Average Charge'].mean()
